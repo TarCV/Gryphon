@@ -6,19 +6,18 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils, gryphon-src, swift, swiftPm }:
+  outputs = { self, nixpkgs, flake-utils, swift, swiftPm }:
     (flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
       in rec {
-        packages.gryphon = swiftPm.lib.buildExecutableProduct {
-            version = "0.18.1";
-            src = ./.;
-#           productName = "Gryphon";
-           target = "Gryphon";
+        gryphon = (swiftPm.lib { pkgs = pkgs; }).buildExecutableProduct {
+           src = ./.;
+           productName = "Gryphon";
+           executableName = "gryphon";
         };
 
-        defaultPackage = packages.gryphon;
+        defaultPackage = gryphon;
       }
     )
   );
